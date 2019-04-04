@@ -1,60 +1,205 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<style>  
-    div.padded {  
-      padding-top: 0px;  
-      padding-right: 100px;  
-      padding-bottom: 0.25in;  
-      padding-left: 100px;  
-    }  
-  </style> 
-<title>Your Name  |  CS 184</title>
+<style>
+    div.padded {
+      padding-top: 0px;
+      padding-right: 100px;
+      padding-bottom: 0.25in;
+      padding-left: 100px;
+    }
+  </style>
+<title>Ashley Park  |  CS 184</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
 </head>
 <body>
 <br />
-<h1 align="middle">Assignment 3: PathTracer</h1>
-    <h2 align="middle">Your Name</h2>
+<h1 align="middle">Assignment 3-2: PathTracer</h1>
+    <h2 align="middle">Ashley Park</h2>
 
     <div class="padded">
-        <p>Use this section to write an overview of the assignment. All of the text in your write-up should be <em>in your own words</em>. If you need to add additional HTML features to this document, you can search the <a href="http://www.w3schools.com/">http://www.w3schools.com/</a> website for instructions. To edit the HTML, you can just copy and paste existing chunks and fill in the text and image file names appropriately.</p>
-        <o>The website writeup is intended to be a self-contained walkthrough of the assignment: we want this to be a piece of work which showcases your understanding of relevant concepts through both mesh images as well as written explanations about what you did to complete each part of the assignment. Try to be as clear and organized as possible when writing about your own output files or extensions to the assignment. We want to understand what you've achieved and how you've done it!</p> 
-        <p>If you are well-versed in web development, feel free to ditch this template and make a better looking page. Just make sure that you include all the components as we've laid them out here. </p>
+        <p>In this project we are expanding upon what we've accomplished in the previous project and continuing to replicate the behavior of light. We use physics to calculate and predict what rays of light are going to do. We started off using Snell's Law to render mirror and glass objects and then moved onto microfacet objects and the basic principles of thin lens to manipulate the depth of field. As an astrophysics major I've taken a lot of physics classes and it was really fun to apply these principles in CS!</p>
 
-    <h2 align="middle">Part 1: Ray Generation and Intersection</h2>
-        <p>Describe what you did in Part 1. etc...</p>
-        <div align="center">
-            <table style="width=100%">
-                <tr>
-                    <td align="middle">
-                    <img src="images/example_image.png" width="480px" />
-                    <figcaption align="middle">Results Caption: my bunny is the bounciest bunny</figcaption>
-                </tr>
-            </table>
-        </div>
-        <p>Here is an example of how to include a simple formula:</p>
-        <p align="middle"><pre align="middle">a^2 + b^2 = c^2</pre></p>
-        <p>or, alternatively, you can include an SVG image of a LaTex formula.</p>
-        <p>This time it's your job to copy-paste in the rest of the sections :)</p>
+      <h2 align="middle">Part 1: Mirror and Glass</h2>
+          <p>To successfully replicate mirror and glass, we have to understand reflection and refraction.</p>
+          <p>Here are images of scene CBspheres.dae with different max_ray_depth settings.</p>
+          <div align="center">
+              <table style="width=100%">
+                    <tr>
+                        <td align="middle">
+                        <img src="images/part1_m0.png" width="300px" />
+                        <figcaption align="middle">max_ray_depth = 0</figcaption>
+                        <td align="middle">
+                        <img src="images/part1_m1.png" width="300px" />
+                        <figcaption align="middle">max_ray_depth = 1</figcaption>
+                        <td align="middle">
+                        <img src="images/part1_m2.png" width="300px" />
+                        <figcaption align="middle">max_ray_depth = 2</figcaption>
+                    </tr>
+                    <tr>
+                        <td align="middle">
+                        <img src="images/part1_m3.png" width="300px" />
+                        <figcaption align="middle">max_ray_depth = 3</figcaption>
+                        <td align="middle">
+                        <img src="images/part1_m4.png" width="300px" />
+                        <figcaption align="middle">max_ray_depth = 4</figcaption>
+                        <td align="middle">
+                        <img src="images/part1_m5.png" width="300px" />
+                        <figcaption align="middle">max_ray_depth = 5</figcaption>
+                    </tr>
+                    <tr>
+                      <td align="middle">
+                        <img src="images/part1_m100.png" width="300px" />
+                        <figcaption align="middle">max_ray_depth = 100</figcaption>
+                      </td>
+                    </tr>
 
+                </table>
+            </div>
+            <p>Clearly, the max_ray_depth value has an effect on the rendered image. By limiting the number of bounces for our light rays, we limit what is visible. For example with max_ray_depth set to zero, we are looking at a scene were light does not bounce, so we only see the light emitted from the light source. As we increase the number of bounces, light illuminates the scene.</p>
 
+        <h2 align="middle">Part 2: Microfacet Materials</h2>
+            <p>Now we are implementing the Microfacet model, specifically those that only reflect.</p>
+            <p>Here are images of scene CBdragon_microfacet_au.dae with different alpha settings. As you can see, as the alpha value increases the dragon loses its glossiness.</p>
+            <div align="center">
+                <table style="width=100%">
+                      <tr>
+                          <td align="middle">
+                          <img src="images/part2_a0.005.png" width="400px" />
+                          <figcaption align="middle">alpha = 0.005</figcaption>
+                          <td align="middle">
+                          <img src="images/part2_a0.05.png" width="400px" />
+                          <figcaption align="middle">alpha = 0.05</figcaption>
+                      </tr>
+                      <tr>
+                          <td align="middle">
+                          <img src="images/part2_a0.25.png" width="400px" />
+                          <figcaption align="middle">alpha = 0.25</figcaption>
+                          <td align="middle">
+                          <img src="images/part2_a0.5.png" width="400px" />
+                          <figcaption align="middle">alpha = 0.5</figcaption>
+                      </tr>
+                  </table>
+              </div>
+              <p>Here are images of scene CBbunny_microfacet_cu.dae rendered with cosine hemisphere sampling and importance sampling. The bunny is noisier when rendered using cosine hemisphere sampling.</p>
+              <div align="center">
+                  <table style="width=100%">
+                        <tr>
+                            <td align="middle">
+                            <img src="images/part2_CosineHem.png" width="400px" />
+                            <figcaption align="middle">Cosine Hemisphere Sampling</figcaption>
+                            <td align="middle">
+                            <img src="images/part2_Importance.png" width="400px" />
+                            <figcaption align="middle">Importance Sampling</figcaption>
+                        </tr>
+                    </table>
+                </div>
+                <p>Here is CBdragon_microfacet_au.dae but with eta and k parameters set to those corresponding to the metal Cobalt.</p>
+                <div align="center">
+                    <table style="width=100%">
+                          <tr>
+                              <td align="middle">
+                              <img src="images/part2_Cobalt.png" width="400px" />
+                              <figcaption align="middle">Dragon in Cobalt</figcaption>
+                          </tr>
+                      </table>
+                  </div>
+            <h2 align="middle">Part 3: Environment Light</h2>
+                <p>By implementing environment lighting we can create more realistic lighting. Environment lights supply incident radiance from all directions and are infinitely far away.</p>
+                <p>Given a ray, we can find the direction in theta and phi using the helper function dir_to_theta_phi. Now we can convert this direction to a location using the helper theta_phi_to_xy. Finally we return a sample Spectrum from the environment map at that location by taking the bilinear interpolation of the location's x and y values.</p>
+                <p>Now we can implement uniform sampling. Uniform sampling generates a random direction on the sphere. Since it's random, the direction shave a uniform probability of 1 / 4pi. With this direction we can convert to phi/theta coordinations and use bilinear interpolation to find the radiance value.</p>
+                <p>To implement importance sampling, we are no longer taking just random samples with uniform probability but biasing our samples based on their incoming radiance. Basically we go through every pixel in the environment map and give it a probability based on the flux passing through.</p>
+                  <div align="center">
+                          <table style="width=100%">
+                              <tr>
+                                  <td align="middle">
+                                  <img src="images/probability_debug.png" width="480px" />
+                                  <figcaption align="middle">probability_debug.png for field.exr</figcaption>
+                              </tr>
+                          </table>
+                  </div>
+                  <p>Here is the bunny_unlit.dae scene and environment map field.exr rendered with uniform sampling and importance sampling. If you look closely, you can see that the bunny rendered using uniform sampling is slightly noisier, while the bunny rendered with importance sampling has a smoother appearance.</p>
+                  <div align="center">
+                          <table style="width=100%">
+                              <tr>
+                                  <td align="middle">
+                                  <img src="images/field.jpeg" width="480px" />
+                                  <figcaption align="middle">Environment map field.exr</figcaption>
+                              </tr>
+                          </table>
+                  </div>
+                    <div align="center">
+                            <table style="width=100%">
+                                <tr>
+                                    <td align="middle">
+                                    <img src="images/part3_uniform.png" width="400px" />
+                                    <figcaption align="middle">Uniform Sampling</figcaption>
+                                    <td align="middle">
+                                    <img src="images/part3_importance.png" width="400px" />
+                                    <figcaption align="middle">Importance Sampling</figcaption>
+                                </tr>
+                            </table>
+                    </div>
+                    <p>Here is the bunny_microfacet_cu_unlit.dae scene and environment map field.exr rendered with uniform sampling and importance sampling. The bunny rendered using uniform sampling is slightly noisier.</p>
+                      <div align="center">
+                              <table style="width=100%">
+                                  <tr>
+                                      <td align="middle">
+                                      <img src="images/part3_MicroUniform.png" width="400px" />
+                                      <figcaption align="middle">Uniform Sampling</figcaption>
+                                      <td align="middle">
+                                      <img src="images/part3_MicroImportance.png" width="400px" />
+                                      <figcaption align="middle">Importance Sampling</figcaption>
+                                  </tr>
+                              </table>
+                      </div>
+              <h2 align="middle">Part 4: Depth of Field</h2>
+                  <p>In Part 4 we implement a thin lens camera. Pin-hole cameras, in which the aperature is zero, capture everything in focus. This is what we've been using so far. The plane of focus receives radiance from a single ray. A thin lens, however, can receive radiance from any point on the lens. Now by using thin lens we can manipulate the focal length and aperature to create a depth of field effect. </p>
+                  <p>Here is CBdragon_microfacet_au.dae rendered with four different focal lengths, all with aperature 0.01</p>
+                    <div align="center">
+                            <table style="width=100%">
+                                <tr>
+                                    <td align="middle">
+                                    <img src="images/part4_fd1.0.png" width="400px" />
+                                    <figcaption align="middle">Focal distance = 1.0</figcaption>
+                                    <td align="middle">
+                                    <img src="images/part4_fd2.0.png" width="400px" />
+                                    <figcaption align="middle">Focal distance = 2.0</figcaption>
+                                </tr>
+                                <tr>
+                                    <td align="middle">
+                                    <img src="images/part4_fd3.16.png" width="400px" />
+                                    <figcaption align="middle">Focal distance = 3.16</figcaption>
+                                    <td align="middle">
+                                    <img src="images/part4_fd4.56.png" width="400px" />
+                                    <figcaption align="middle">Focal distance = 4.56</figcaption>
+                                </tr>
+                            </table>
+                    </div>
 
-    <h2 align="middle">A Few Notes On Webpages</h2>
-        <p>Here are a few problems students have encountered in the past. You will probably encounter these problems at some point, so don't wait until right before the deadline to check that everything is working. Test your website on the instructional machines early!</p>
-        <ul>
-        <li>Your main report page should be called index.html.</li>
-        <li>Be sure to include and turn in all of the other files (such as images) that are linked in your report!</li>
-        <li>Use only <em>relative</em> paths to files, such as <pre>"./images/image.jpg"</pre>
-        Do <em>NOT</em> use absolute paths, such as <pre>"/Users/student/Desktop/image.jpg"</pre></li>
-        <li>Pay close attention to your filename extensions. Remember that on UNIX systems (such as the instructional machines), capitalization matters. <pre>.png != .jpeg != .jpg != .JPG</pre>
-        <li>Be sure to adjust the permissions on your files so that they are world readable. For more information on this please see this tutorial: <a href="http://www.grymoire.com/Unix/Permissions.html">http://www.grymoire.com/Unix/Permissions.html</a></li>
-        <li>And again, test your website on the instructional machines early!</li>
+                    <p>Here is CBdragon_microfacet_au.dae rendered with four different aperatures, all with focal length 2.0</p>
+                      <div align="center">
+                              <table style="width=100%">
+                                  <tr>
+                                      <td align="middle">
+                                      <img src="images/part4_ap0.001.png" width="400px" />
+                                      <figcaption align="middle">Aperature = 0.001</figcaption>
+                                      <td align="middle">
+                                      <img src="images/part4_ap0.1.png" width="400px" />
+                                      <figcaption align="middle">Aperature = 0.1</figcaption>
+                                  </tr>
+                                  <tr>
+                                      <td align="middle">
+                                      <img src="images/part4_ap0.5.png" width="400px" />
+                                      <figcaption align="middle">Aperature = 0.5</figcaption>
+                                      <td align="middle">
+                                      <img src="images/part4_ap1.0.png" width="400px" />
+                                      <figcaption align="middle">Aperature = 1.0</figcaption>
+                                  </tr>
+                              </table>
+                      </div>
+
 </div>
 </body>
 </html>
-
-
-
-

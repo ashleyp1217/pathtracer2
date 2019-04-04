@@ -182,7 +182,8 @@ class MicrofacetBSDF : public BSDF {
   bool is_delta() const { return false; }
 
 private:
-  Spectrum eta, k;
+  Spectrum eta;
+  Spectrum k;
   float alpha;
   UniformGridSampler2D sampler;
   CosineWeightedHemisphereSampler3D cosineHemisphereSampler;
